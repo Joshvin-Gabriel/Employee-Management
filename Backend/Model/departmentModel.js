@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import autoIncrement from 'mongoose-auto-increment';
+import connection from '../Config/MongoDB.js'; 
 import mongoose from 'mongoose';
 
 // already created a mongoose connection

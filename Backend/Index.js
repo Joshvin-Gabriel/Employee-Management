@@ -4,10 +4,16 @@ import express from 'express';
 // import body-parser - helps to parse the request and create the req.body object
 import bodyParser from "body-parser";
 
+// import cors - provides Express middleware to enable CORS with various options, connect frontend
+import cors from "cors";
+
 // import routes
 import router from './Routes/routes.js';
 
 const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
 
 // use express json
 app.use(bodyParser.json());

@@ -11,9 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ed3ath/mongoose-auto-increment": "^5.0.1",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "mongodb": "^5.7.0",
+    "mongoose-auto-increment": "^3.0.1",
     "nodemon": "^3.0.1"
   }
 }

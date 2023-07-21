@@ -3,6 +3,7 @@ import Employee from '../Model/employeeModel.js';
 import mongoose from 'mongoose';
 import Department from '../Model/departmentModel.js';
 
+// Myself (Gabriel Worked API Function)
 // Function to mark role as inactive by role_id
 const makeRoleInactive = async (req, res) => {
   try {

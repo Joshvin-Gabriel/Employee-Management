@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import autoIncrement from 'mongoose-auto-increment';
 import mongoose from 'mongoose';
 
-// Assuming you have already created a mongoose connection
+// already created a mongoose connection
 autoIncrement.initialize(mongoose.connection);
 
 const employeeSchema = new Schema({
@@ -45,15 +45,16 @@ const employeeSchema = new Schema({
   },
   dept_id: {
     type: Number,
-    required: true,
+    ref: 'Department',
   },
   dept_name: {
     type: String,
     required: true,
+    ref: 'Department',
   },
   role_id: {
     type: Number,
-    required: true,
+    ref: 'Role',
   },
   role_name: {
     type: String,
@@ -82,11 +83,10 @@ const employeeSchema = new Schema({
   },
 });
 
-// Initialize auto-increment for the role_id field
 employeeSchema.plugin(autoIncrement.plugin, {
   model: 'Employee',
   field: 'emp_id',
-  startAt: 1001,
+  startAt: 8030, 
   incrementBy: 1,
 });
 

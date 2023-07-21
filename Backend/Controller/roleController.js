@@ -6,12 +6,12 @@ import mongoose from 'mongoose';
 const makeRoleInactive = async (req, res) => {
   try {
     const { role_id } = req.params;
-    const roleIdNumber = parseInt(role_id, 10); // Convert role_id to a number
+    const roleIdNumber = parseInt(role_id, 10);
     const { is_active_flag } = req.body;
 
     // Find the role by role_id and update the is_active_flag
     const updatedRole = await Role.findOneAndUpdate(
-      { role_id: roleIdNumber }, // Use the number instead of string in the filter
+      { role_id: roleIdNumber }, 
       { is_active_flag: is_active_flag },
       { new: true }
     );
@@ -32,20 +32,17 @@ const listRoles = async (req, res) => {
   try {
     const { is_active_flag } = req.body;
 
-    // Define the filter based on the 'is_active_flag' value
     const filter = {};
     if (typeof is_active_flag === 'boolean') {
       filter.is_active_flag = is_active_flag;
     }
 
-    // Fetch the roles based on the filter
     const roles = await Role.find(filter);
 
     if (!roles || roles.length === 0) {
       return res.status(404).json({ message: 'No roles found' });
     }
 
-    // Return the list of roles
     res.status(200).json(roles);
   } catch (error) {
     console.error('Error fetching roles:', error);
@@ -59,7 +56,7 @@ const createRole = async (req, res) => {
   try {
     const { role_name, dept_id, dept_name, inserted_by_name } = req.body;
 
-    // Find the corresponding Employee document by name
+    // Find the corresponding Employee details by name
     const insertedByEmployee = await Employee.findOne({ firstname: inserted_by_name });
 
     if (!insertedByEmployee) {
@@ -72,7 +69,7 @@ const createRole = async (req, res) => {
       dept_id,
       dept_name,
       inserted_by: insertedByEmployee._id,
-      inserted_by_name, // Include the inserted_by_name in the inserted_by field
+      inserted_by_name,
     });
 
     const savedRole = await newRole.save();
@@ -114,9 +111,9 @@ const getRoleById = async (req, res) => {
   const updateRoleById = async (req, res) => {
     try {
       const { role_name, dept_id, dept_name, updated_by } = req.body;
-      const roleIdToUpdate = req.params.role_id; // Parse the role_id as a number
+      const roleIdToUpdate = req.params.role_id;
   
-      const filter = { role_id: roleIdToUpdate }; // Filter to find the role by role_id
+      const filter = { role_id: roleIdToUpdate }; 
       const update = {
         role_name,
         dept_id,
@@ -155,4 +152,12 @@ const getRoleById = async (req, res) => {
     }
   };
 
-export { makeRoleInactive , listRoles, createRole,  getAllRoles,  getRoleById,  updateRoleById,  deleteRoleById, };
+export { 
+  makeRoleInactive, 
+  listRoles, 
+  createRole,  
+  getAllRoles,  
+  getRoleById,  
+  updateRoleById,  
+  deleteRoleById, 
+};

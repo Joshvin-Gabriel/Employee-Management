@@ -1,3 +1,5 @@
+// Local MongoDB Connection setup 
+
 import mongoose from 'mongoose';
 
 const mongoURI = 'mongodb://127.0.0.1:27017/Employee_Management'; // Replace "your_database_name" with your MongoDB database name

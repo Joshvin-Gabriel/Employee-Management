@@ -1,11 +1,36 @@
 import Employee from '../Model/employeeModel.js';
+import Department from '../Model/departmentModel.js';
+import Role from '../Model/roleModel.js';
 
 // Create a new employee
 const createEmployee = async (req, res) => {
   try {
     const employeeData = req.body;
+    const departmentName = employeeData.dept_name;
+    const roleName = employeeData.role_name;
+
+    // Find the department based on the department name
+    const department = await Department.findOne({ dept_name: departmentName });
+
+    if (!department) {
+      return res.status(400).json({ error: 'Invalid department name' });
+    }
+
+    // Find the role based on the role name
+    const role = await Role.findOne({ role_name: roleName });
+
+    if (!role) {
+      return res.status(400).json({ error: 'Invalid role name' });
+    }
+
+    // Set the department ID and role ID in the employeeData
+    employeeData.dept_id = department.dept_id;
+    employeeData.role_id = role.role_id;
+
+    // Create a new employee with the updated employeeData
     const newEmployee = new Employee(employeeData);
     const savedEmployee = await newEmployee.save();
+
     console.log('Employee created:', savedEmployee);
     res.status(201).json(savedEmployee);
   } catch (error) {
@@ -83,7 +108,7 @@ const deleteEmployeeById = async (req, res) => {
 const makeEmployeeInactive = async (req, res) => {
   try {
     const { emp_id } = req.params;
-    const { is_active_flag } = req.body; // Assuming the request body includes a field 'is_active_flag' (true or false)
+    const { is_active_flag } = req.body; 
 
     // Find the employee by emp_id and update the is_active_flag
     const updatedEmployee = await Employee.findOneAndUpdate(
@@ -104,7 +129,7 @@ const makeEmployeeInactive = async (req, res) => {
   }
 };
 
-// Function to list all users and filter by manager's role_name on the client-side
+// Function to list all users and filter by manager's or Any roles in role_name on the Frontend client-side
 const listUsersByManager = async (req, res) => {
   try {
     // Fetch all employees
@@ -114,21 +139,19 @@ const listUsersByManager = async (req, res) => {
       return res.status(404).json({ message: 'No users found' });
     }
 
-    console.log('All Users:', allUsers); // Add this line to see all the retrieved users
+    console.log('All Users:', allUsers);
 
-    const { role_name } = req.body; // Assuming the filtering criteria is sent in the request body
-    console.log('Request Body:', req.body); // Add this line to see the request body received
+    const { role_name } = req.body; 
+    console.log('Request Body:', req.body); 
 
-    // If role_name is provided, filter the users based on the `role_name` containing "Manager" prefix or suffix
     let filteredUsers = allUsers;
     if (role_name) {
       const regex = new RegExp(`.*${role_name}.*`, 'i');
       filteredUsers = allUsers.filter((user) => user.role_name.match(regex));
     }
 
-    console.log('Filtered Users:', filteredUsers); // Add this line to see the users that match the filter
+    console.log('Filtered Users:', filteredUsers); 
 
-    // Return the list of filtered users or all users if no filter is applied
     res.status(200).json(filteredUsers);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -136,6 +159,7 @@ const listUsersByManager = async (req, res) => {
   }
 };
 
+// Export all the functions to the routes
 export {
   createEmployee,
   getAllEmployees,

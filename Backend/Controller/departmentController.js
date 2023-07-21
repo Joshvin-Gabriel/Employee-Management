@@ -92,6 +92,7 @@ const deleteDepartmentById = async (req, res) => {
   }
 };
 
+// Export all the functions to the Routes
 export {
   createDepartment,
   getAllDepartments,

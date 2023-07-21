@@ -2,6 +2,7 @@ import Employee from '../Model/employeeModel.js';
 import Department from '../Model/departmentModel.js';
 import Role from '../Model/roleModel.js';
 
+// Myself (Gabriel Worked API Function)
 // Make an employee inactive by emp_id
 const makeEmployeeInactive = async (req, res) => {
   try {
@@ -35,8 +36,8 @@ const makeEmployeeInactive = async (req, res) => {
   }
 };
 
+// Myself (Gabriel Worked API Function)
 // Function to list all users and filter by manager's or Any roles in role_name on the Frontend client-side
-
 const listUsersByManager = async (req, res) => {
   try {
     // Fetch all employees

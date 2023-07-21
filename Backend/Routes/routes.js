@@ -23,6 +23,7 @@ router.post('/roles', createRole);
 // Update a role by role ID
 router.put('/roles/:role_id', updateRoleById);
 
+// Myself (Gabriel Worked API Function)
 // API to make the role inactive
 router.put('/ract/:role_id', makeRoleInactive);
 
@@ -38,9 +39,11 @@ router.post('/employees', createEmployee);
 // Update an employee by emp_id
 router.put('/employees/:emp_id', updateEmployeeById);
 
+// Myself (Gabriel Worked API Function)
 // Make an employee inactive by emp_id
 router.put('/employees/inactive/:emp_id', makeEmployeeInactive);
 
+// Myself (Gabriel Worked API Function)
 // Route to list users with a filter by manager's role_name
 router.get('/users', listUsersByManager);
 

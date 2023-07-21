@@ -2,6 +2,75 @@ import Employee from '../Model/employeeModel.js';
 import Department from '../Model/departmentModel.js';
 import Role from '../Model/roleModel.js';
 
+// Make an employee inactive by emp_id
+const makeEmployeeInactive = async (req, res) => {
+  try {
+    const { emp_id } = req.params;
+    const { is_active_flag } = req.body; 
+
+    // Parse the is_active_flag as a boolean
+    const isActiveFlag = JSON.parse(is_active_flag);
+
+    // Validate is_active_flag
+    if (typeof isActiveFlag !== 'boolean') {
+      return res.status(400).json({ error: 'Invalid value for is_active_flag. Must be a boolean.' });
+    }
+
+    // Find the employee by emp_id and update the is_active_flag
+    const updatedEmployee = await Employee.findOneAndUpdate(
+      { emp_id },
+      { is_active_flag: is_active_flag },
+      { new: true }
+    );
+
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    console.log('Employee marked as inactive:', updatedEmployee);
+    res.status(200).json({ message: `Employee marked as ${is_active_flag ? 'active' : 'inactive'}`, updatedEmployee });
+  } catch (error) {
+    console.error('Error updating employee:', error);
+    res.status(500).json({ error: 'Failed to update employee' });
+  }
+};
+
+// Function to list all users and filter by manager's or Any roles in role_name on the Frontend client-side
+
+const listUsersByManager = async (req, res) => {
+  try {
+    // Fetch all employees
+    const allUsers = await Employee.find({});
+
+    if (!allUsers || allUsers.length === 0) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    console.log('All Users:', allUsers);
+
+    const { role_name } = req.body;
+
+    // Validate role_name
+    if (role_name && typeof role_name !== 'string') {
+      return res.status(400).json({ error: 'Invalid value for role_name. Must be a string.' });
+    }
+
+    let filteredUsers = allUsers;
+    if (role_name) {
+      const regex = new RegExp(`.*${role_name}.*`, 'i');
+      filteredUsers = allUsers.filter((user) => user.role_name.match(regex));
+    }
+
+    console.log('Filtered Users:', filteredUsers);
+
+    res.status(200).json(filteredUsers);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+};
+
+
 // Create a new employee
 const createEmployee = async (req, res) => {
   try {
@@ -104,60 +173,7 @@ const deleteEmployeeById = async (req, res) => {
   }
 };
 
-// Make an employee inactive by emp_id
-const makeEmployeeInactive = async (req, res) => {
-  try {
-    const { emp_id } = req.params;
-    const { is_active_flag } = req.body; 
 
-    // Find the employee by emp_id and update the is_active_flag
-    const updatedEmployee = await Employee.findOneAndUpdate(
-      { emp_id },
-      { is_active_flag: is_active_flag },
-      { new: true }
-    );
-
-    if (!updatedEmployee) {
-      return res.status(404).json({ message: 'Employee not found' });
-    }
-
-    console.log('Employee marked as inactive:', updatedEmployee);
-    res.status(200).json({ message: `Employee marked as ${is_active_flag ? 'active' : 'inactive'}`, updatedEmployee });
-  } catch (error) {
-    console.error('Error updating employee:', error);
-    res.status(500).json({ error: 'Failed to update employee' });
-  }
-};
-
-// Function to list all users and filter by manager's or Any roles in role_name on the Frontend client-side
-const listUsersByManager = async (req, res) => {
-  try {
-    // Fetch all employees
-    const allUsers = await Employee.find({});
-
-    if (!allUsers || allUsers.length === 0) {
-      return res.status(404).json({ message: 'No users found' });
-    }
-
-    console.log('All Users:', allUsers);
-
-    const { role_name } = req.body; 
-    console.log('Request Body:', req.body); 
-
-    let filteredUsers = allUsers;
-    if (role_name) {
-      const regex = new RegExp(`.*${role_name}.*`, 'i');
-      filteredUsers = allUsers.filter((user) => user.role_name.match(regex));
-    }
-
-    console.log('Filtered Users:', filteredUsers); 
-
-    res.status(200).json(filteredUsers);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Failed to fetch users' });
-  }
-};
 
 // Export all the functions to the routes
 export {

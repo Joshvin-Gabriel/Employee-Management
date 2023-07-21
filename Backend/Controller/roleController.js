@@ -1,6 +1,7 @@
 import Role from '../Model/roleModel.js';
 import Employee from '../Model/employeeModel.js';
 import mongoose from 'mongoose';
+import Department from '../Model/departmentModel.js';
 
 // Function to mark role as inactive by role_id
 const makeRoleInactive = async (req, res) => {
@@ -54,7 +55,7 @@ const listRoles = async (req, res) => {
 // API to create a new role
 const createRole = async (req, res) => {
   try {
-    const { role_name, dept_id, dept_name, inserted_by_name } = req.body;
+    const { role_name, dept_name, inserted_by_name } = req.body;
 
     // Find the corresponding Employee details by name
     const insertedByEmployee = await Employee.findOne({ firstname: inserted_by_name });
@@ -63,10 +64,17 @@ const createRole = async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    // Get the ObjectId of the Employee and use it as "inserted_by"
+    // Find the corresponding Department details by name
+    const department = await Department.findOne({ dept_name });
+
+    if (!department) {
+      return res.status(404).json({ message: 'Department not found' });
+    }
+
+    // Use the dept_id from the Department collection
     const newRole = new Role({
       role_name,
-      dept_id,
+      dept_id: department.dept_id,
       dept_name,
       inserted_by: insertedByEmployee._id,
       inserted_by_name,

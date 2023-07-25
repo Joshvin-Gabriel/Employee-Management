@@ -10,6 +10,11 @@ import cors from "cors";
 // import routes
 import router from './Routes/routes.js';
 
+import dotenv from 'dotenv';
+
+// Load environment variables from config.env file
+dotenv.config({ path: 'config.env' });
+
 const app = express();
 
 // Enable CORS for all routes
@@ -30,7 +35,6 @@ app.get('/', function(req, res){
 });
 
 // Start the server
-const port = 4000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });

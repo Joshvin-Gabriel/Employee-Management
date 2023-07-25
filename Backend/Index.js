@@ -10,11 +10,6 @@ import cors from "cors";
 // import routes
 import router from './Routes/routes.js';
 
-import dotenv from 'dotenv';
-
-// Load environment variables from config.env file
-dotenv.config({ path: 'config.env' });
-
 const app = express();
 
 // Enable CORS for all routes

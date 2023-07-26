@@ -92,9 +92,7 @@ router.put(
 
 // Myself (Gabriel Worked API Function)
 // Make an employee inactive by emp_id
-router.put('/employees/inactive/:emp_id',
-param('emp_id').isInt().withMessage('Employee ID must be an integer'),
- makeEmployeeInactive);
+router.put('/employees/inactive/:emp_id', makeEmployeeInactive);
 
 // Myself (Gabriel Worked API Function)
 // Route to list users with a filter by manager's role_name

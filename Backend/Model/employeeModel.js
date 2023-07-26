@@ -10,10 +10,12 @@ const employeeSchema = new Schema({
   emp_id: {
     type: Number,
     unique: true,
+    index: true,
   },
   firstname: {
     type: String,
     required: true,
+    index: true,
   },
   lastname: {
     type: String,

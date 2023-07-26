@@ -1,14 +1,14 @@
 import Employee from '../Model/employeeModel.js';
 import Department from '../Model/departmentModel.js';
 import Role from '../Model/roleModel.js';
-import { handleEmployeeUpdateResponse, handleEmployeeUpdateError } from '../Response/EmployeeResponse.js';
-import { prepareEmployeeInactiveData } from '../Request/EmployeeRequest.js';
+import { handleEmployeeUpdateResponse, handleEmployeeUpdateError, handleListByManagersSuccess, handleListByManagersNoUsersFound, handleListByManagersError } from '../Response/EmployeeResponse.js';
+import { prepareEmployeeInactiveData, prepareListUsersByManagerData } from '../Request/EmployeeRequest.js';
 
 // Myself (Gabriel Worked API Function)
 // Make an employee inactive by emp_id
 const makeEmployeeInactive = async (req, res) => {
   try {
-    const { emp_id, is_active_flag } = prepareEmployeeInactiveData(req);
+    const { emp_id, is_active_flag } = await prepareEmployeeInactiveData(req);
 
     const updatedEmployee = await Employee.findOneAndUpdate(
       { emp_id },
@@ -22,38 +22,63 @@ const makeEmployeeInactive = async (req, res) => {
 
     handleEmployeeUpdateResponse(res, is_active_flag, updatedEmployee);
   } catch (error) {
-    handleEmployeeUpdateError(res, error);
+    handleEmployeeUpdateError(res, error.message); // Send the validation error message in the response
   }
 };
 
 // Myself (Gabriel Worked API Function)
+
 const listUsersByManager = async (req, res) => {
   try {
-    const { role_name } = req.body;
+    const { filter, page = 1, perPage = 10 } = await prepareListUsersByManagerData(req);
 
-    // Validate role_name
-    if (role_name && typeof role_name !== 'string') {
-      return res.status(400).json({ error: 'Invalid value for role_name. Must be a string.' });
-    }
+    // Calculate the number of documents to skip based on the page number and records per page
+    const skip = (page - 1) * perPage;
 
-    // Define the filter
-    const filter = role_name ? { role_name: new RegExp(role_name, 'i') } : {};
-
-    // Fetch filtered users
-    const filteredUsers = await Employee.find(filter);
+    // Fetch filtered users with pagination
+    const filteredUsers = await Employee.find(filter)
+      .skip(skip)
+      .limit(perPage);
 
     if (!filteredUsers || filteredUsers.length === 0) {
-      return res.status(404).json({ message: 'No users found' });
+      return handleListByManagersNoUsersFound(res);
     }
 
     console.log('Filtered Users:', filteredUsers);
 
-    res.status(200).json(filteredUsers);
+    handleListByManagersSuccess(res, filteredUsers);
   } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Failed to fetch users' });
+    handleListByManagersError(res, error.message); // Send the validation error message in the response
   }
 };
+///////////////
+// const listUsersByManager = async (req, res) => {
+//   try {
+//     const { role_name } = req.body;
+
+//     // Validate role_name
+//     if (role_name && typeof role_name !== 'string') {
+//       return res.status(400).json({ error: 'Invalid value for role_name. Must be a string.' });
+//     }
+
+//     // Define the filter
+//     const filter = role_name ? { role_name: new RegExp(role_name, 'i') } : {};
+
+//     // Fetch filtered users
+//     const filteredUsers = await Employee.find(filter);
+
+//     if (!filteredUsers || filteredUsers.length === 0) {
+//       return res.status(404).json({ message: 'No users found' });
+//     }
+
+//     console.log('Filtered Users:', filteredUsers);
+
+//     res.status(200).json(filteredUsers);
+//   } catch (error) {
+//     console.error('Error fetching users:', error);
+//     res.status(500).json({ error: 'Failed to fetch users' });
+//   }
+// };
 
 
 

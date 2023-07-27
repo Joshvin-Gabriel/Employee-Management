@@ -33,9 +33,9 @@ const prepareListUsersByManagerData = async (req) => {
     const { role_name } = req.body;
   
     const validations = [
-      param('page').optional().isInt().withMessage('Page must be an integer'),
+      param('page').optional().isInt().withMessage('Page ID must be an integer'),
       param('perPage').optional().isInt().withMessage('PerPage must be an integer'),
-      role_name && body('role_name').isString().withMessage('Role name must be a string'),
+      body('role_name').isString().withMessage('Role name must be a string'),
     ];
   
     // Run validations using the validation middleware

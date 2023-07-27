@@ -2,19 +2,18 @@ import Role from '../Model/roleModel.js';
 import Employee from '../Model/employeeModel.js';
 import mongoose from 'mongoose';
 import Department from '../Model/departmentModel.js';
+import { handleRoleUpdateResponse, handleRoleUpdateError } from '../Response/RoleResponse.js';
+import { prepareRoleData } from '../Request/RoleRequest.js';
 
 // Myself (Gabriel Worked API Function)
 // Function to mark role as inactive by role_id
 const makeRoleInactive = async (req, res) => {
   try {
-    const { role_id } = req.params;
-    const roleIdNumber = parseInt(role_id, 10);
-    const { is_active_flag } = req.body;
+    const { role_id, is_active_flag } = await prepareRoleData(req);
 
-    // Find the role by role_id and update the is_active_flag
     const updatedRole = await Role.findOneAndUpdate(
-      { role_id: roleIdNumber }, 
-      { is_active_flag: is_active_flag },
+      { role_id },
+      { is_active_flag },
       { new: true }
     );
 
@@ -22,10 +21,9 @@ const makeRoleInactive = async (req, res) => {
       return res.status(404).json({ message: 'Role not found' });
     }
 
-    res.status(200).json({ message: `Role marked as ${is_active_flag ? 'active' : 'inactive'}`, updatedRole });
+    handleRoleUpdateResponse(res, is_active_flag, updatedRole);
   } catch (error) {
-    console.error('Error updating role:', error);
-    res.status(500).json({ error: 'Failed to update role' });
+    handleRoleUpdateError(res, error.message); // Send the validation error message in the response
   }
 };
 

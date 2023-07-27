@@ -1,9 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Updating the informaion in routes body and done the santization
+// Updating the informaion in routes body and done the santization in seperate Request and Response file
 ////////////////////////////////////////////////////////////////////////////////
 
 import express from 'express';
-import { body, param, validationResult } from 'express-validator';
 
 import {
   createDepartment,
@@ -42,15 +41,12 @@ const router = express.Router();
 // Create a new role
 router.post(
   '/roles',
-  body('role_name').isString().withMessage('Role name must be a string'),
   createRole
 );
 
 // Update a role by role ID
 router.put(
   '/roles/:role_id',
-  param('role_id').isInt().withMessage('Role ID must be an integer'),
-  body('role_name').isString().withMessage('Role name must be a string'),
   updateRoleById
 );
 
@@ -66,28 +62,12 @@ router.get('/roles/:role_id', getRoleById);
 
 // Create a new employee
 router.post('/employees',
-  body('firstname').isString().withMessage('First name must be a string'),
-  body('lastname').isString().withMessage('Last name must be a string'),
-  body('gender').isString().withMessage('Gender must be a string'),
-  body('address').isString().withMessage('Address must be a string'),
-  body('email').isEmail().withMessage('Invalid email address'),
-  body('mobile_no').isNumeric().withMessage('Mobile number must be a valid number'),
-  body('age').isFloat({ min: 10 }).withMessage('Age must be a valid number greater than or equal to 10'),
-  body('date_of_join').isISO8601().withMessage('Invalid date format for date_of_join'),
-  body('dept_name').isString().withMessage('Department name must be a string'),
-  body('role_name').isString().withMessage('Role name must be a string'),
-  body('inserted_by').isString().withMessage('Inserted by must be a string'),
   createEmployee
 );
 
 // Update an employee by emp_id
 router.put(
-  '/employees/:emp_id',
-  param('emp_id').isInt().withMessage('Employee ID must be an integer'),
-  body('firstname').isString().withMessage('First name must be a string'),
-  body('lastname').isString().withMessage('Last name must be a string'),
-  // Add more validation rules for other fields...
-  updateEmployeeById
+  '/employees/:emp_id', updateEmployeeById
 );
 
 // Myself (Gabriel Worked API Function)
@@ -126,9 +106,6 @@ router.get('/departments/:id', getDepartmentById);
 // Update a department by department ID
 router.put(
   '/departments/:id',
-  param('id').isInt().withMessage('Department ID must be an integer'),
-  body('department_name').isString().withMessage('Department name must be a string'),
-  // Add more validation rules for other fields...
   updateDepartmentById
 );
 
